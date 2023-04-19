@@ -7,7 +7,10 @@
 //     item[i].style.fontWeight='bold';
 // }
 
-var list = document.querySelectorAll(".list-group-item");
+// var list = document.querySelectorAll(".list-group-item");
 
-list[1].style.backgroundColor='green';
-list[2].style.display='none';
+// list[1].style.backgroundColor='green';
+// list[2].style.display='none';
+
+var header = document.getElementById('header-title');
+header.append('HEllo')

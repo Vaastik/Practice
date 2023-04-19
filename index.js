@@ -1,67 +1,55 @@
-var form = document.getElementById('addForm');
-var itemList = document.getElementById('items');
-var filter = document.getElementById('filter');
+let items = [];
 
-// Form submit event
-form.addEventListener('submit', addItem);
-// Delete event
-itemList.addEventListener('click', removeItem);
-// Filter event
-filter.addEventListener('keyup', filterItems);
+// select DOM elements
+const searchInput = document.querySelector('#search');
+const itemsList = document.querySelector('#items');
+const newItemForm = document.querySelector('#new-item-form');
+const itemNameInput = document.querySelector('#name');
+const itemDescriptionInput = document.querySelector('#description');
 
-// Add item
-function addItem(e){
-  e.preventDefault();
+// function to render items list
+function renderItems() {
+  // clear previous content
+  itemsList.innerHTML = '';
 
-  // Get input value
-  var newItem = document.getElementById('item').value;
+  // filter items based on search input value
+  const filteredItems = items.filter(function(item) {
+    return (
+      item.name.toLowerCase().includes(searchInput.value.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchInput.value.toLowerCase())
+    );
+  });
 
-  // Create new li element
-  var li = document.createElement('li');
-  // Add class
-  li.className = 'list-group-item';
-  // Add text node with input value
-  li.appendChild(document.createTextNode(newItem));
-
-  // Create del button element
-  var deleteBtn = document.createElement('button');
-
-  // Add classes to del button
-  deleteBtn.className = 'btn btn-danger btn-sm float-right delete';
-
-  // Append text node
-  deleteBtn.appendChild(document.createTextNode('X'));
-
-  // Append button to li
-  li.appendChild(deleteBtn);
-
-  // Append li to list
-  itemList.appendChild(li);
-}
-
-// Remove item
-function removeItem(e){
-  if(e.target.classList.contains('delete')){
-    if(confirm('Are You Sure?')){
-      var li = e.target.parentElement;
-      itemList.removeChild(li);
-    }
-  }
-}
-
-// Filter Items
-function filterItems(e){
-  // convert text to lowercase
-  var text = e.target.value.toLowerCase();
-  // Get lis
-  var items = itemList.getElementsByTagName('li');
-  // Convert to an array
-  Array.from(items).forEach(function(item){
-    var itemName = item.firstChild.textContent;
-    if(itemName.toLowerCase().indexOf(text) != -1){
-      item.style.display = 'block';
-    } else {
-      item.style.display = 'none';
-    }
+  // create new list items and append to items list
+  filteredItems.forEach(function(item) {
+    const li = document.createElement('li');
+    li.textContent = item.name;
+    const p = document.createElement('p');
+    p.textContent = item.description;
+    li.appendChild(p);
+    itemsList.appendChild(li);
   });
 }
+
+// add event listeners
+searchInput.addEventListener('input', renderItems);
+
+newItemForm.addEventListener('submit', function(event) {
+  event.preventDefault();
+  
+  const itemName = itemNameInput.value;
+  const itemDescription = itemDescriptionInput.value;
+
+  // add new item to items array
+  items.push({ name: itemName, description: itemDescription });
+
+  // clear input values
+  itemNameInput.value = '';
+  itemDescriptionInput.value = '';
+
+  // re-render items list
+  renderItems();
+});
+
+// initial render
+renderItems();
